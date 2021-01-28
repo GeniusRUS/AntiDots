@@ -1,29 +1,17 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
 
 plugins {
     id("com.jfrog.bintray")
-    id("com.github.dcendents.android-maven")
     id("com.android.library")
+    id("maven-publish")
     kotlin("android")
-    kotlin("android.extensions")
-}
-
-extra.apply{
-    set("bintrayRepo", "AntiDots")
-    set("bintrayName", "com.geniusrus.AntiDots")
-    set("libraryName", "antidots")
-    set("publishedGroupId", "com.geniusrus.antidots")
-    set("artifact", "antidots")
-    set("libraryVersion", "1.0.0")
-    set("libraryDescription", "Android library for displaying dots with some scroll containers")
-    set("siteUrl", "https://github.com/GeniusRUS/AntiDots")
-    set("gitUrl", "https://github.com/GeniusRUS/AntiDots.git")
-    set("developerId", "GeniusRUS")
-    set("developerName", "Viktor Likhanov")
-    set("developerEmail", "Gen1usRUS@yandex.ru")
-    set("licenseName", "The Apache Software License, Version 2.0")
-    set("licenseUrl", "http://www.apache.org/licenses/LICENSE-2.0.txt")
-    set("allLicenses", arrayOf("Apache-2.0"))
 }
 
 android {
@@ -32,7 +20,7 @@ android {
         minSdkVersion(16)
         targetSdkVersion(30)
         versionCode = 1
-        versionName = extra.get("libraryVersion") as String
+        versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -61,6 +49,9 @@ android {
     }
 }
 
+group = "com.geniusrus.view"
+version = android.defaultConfig.versionName.toString()
+
 dependencies {
     implementation(kotlin("stdlib-jdk7", KotlinCompilerVersion.VERSION))
     implementation("androidx.core:core-ktx:1.3.2")
@@ -69,4 +60,81 @@ dependencies {
     testImplementation("junit:junit:4.13.1")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+}
+
+tasks {
+    register("androidSourcesJar", Jar::class) {
+        archiveClassifier.set("sources")
+        from(android.sourceSets.getByName("main").java.srcDirs)
+    }
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("AntiDotsLibrary") {
+            artifactId = "antidots"
+
+            afterEvaluate { artifact(tasks.getByName("bundleReleaseAar")) }
+            artifact(tasks.getByName("androidSourcesJar"))
+
+            pom {
+                name.set("AntiDots")
+                description.set("Android library for displaying dots with some scroll containers")
+                url.set("https://github.com/GeniusRUS/AntiDots")
+
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("GeniusRUS")
+                        name.set("Viktor Likhanov")
+                        email.set("Gen1usRUS@yandex.ru")
+                    }
+                }
+                scm {
+                    connection.set("git://github.com/GeniusRUS/AntiDots.git")
+                    developerConnection.set("git://github.com/GeniusRUS/AntiDots.git")
+                    url.set("https://github.com/GeniusRUS/AntiDots")
+                }
+
+                // Saving external dependencies list into .pom-file
+                withXml {
+                    fun groovy.util.Node.addDependency(dependency: Dependency, scope: String) {
+                        appendNode("dependency").apply {
+                            appendNode("groupId", dependency.group)
+                            appendNode("artifactId", dependency.name)
+                            appendNode("version", dependency.version)
+                            appendNode("scope", scope)
+                        }
+                    }
+
+                    asNode().appendNode("dependencies").let { dependencies ->
+                        // List all "api" dependencies as "compile" dependencies
+                        configurations.api.get().allDependencies.forEach {
+                            dependencies.addDependency(it, "compile")
+                        }
+                        // List all "implementation" dependencies as "runtime" dependencies
+                        configurations.implementation.get().allDependencies.forEach {
+                            dependencies.addDependency(it, "runtime")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "bintray"
+            credentials {
+                username = gradleLocalProperties(rootDir).getProperty("bintray.user")
+                password = gradleLocalProperties(rootDir).getProperty("bintray.apikey")
+            }
+            url = uri("https://api.bintray.com/maven/geniusrus/AntiDots/$group/;publish=1")
+        }
+    }
 }
