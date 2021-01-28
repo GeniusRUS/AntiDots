@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AntiDotsView">
+        <attr name="dotDrawable" format="reference"/>
+        <attr name="trackDrawable" format="reference"/>
+        <attr name="dotsCount" format="integer"/>
+        <attr name="dotsSpace" format="dimension"/>
+        <attr name="trackPosition" format="float"/>
+    </declare-styleable>
+</resources>
