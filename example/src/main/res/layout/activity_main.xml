@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         app:dotDrawable="@drawable/dot_item"
         app:trackDrawable="@drawable/dot_track"
-        app:dotsCount="4"
+        app:dotsCount="5"
         app:dotsSpace="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

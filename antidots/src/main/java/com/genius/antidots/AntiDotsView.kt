@@ -45,7 +45,13 @@ class AntiDotsView @JvmOverloads constructor(
 
         if (isInEditMode) {
             dotsCount = if (dotsCount == 0) 4 else dotsCount
-            trackPosition = if (trackPosition == 0F) 2F.coerceAtMost(dotsCount.toFloat()) else trackPosition.coerceAtMost(dotsCount.toFloat())
+            trackPosition = if (trackPosition == 0F) {
+                2F.coerceAtMost(
+                    dotsCount.toFloat().minus(1F).coerceAtLeast(0F)
+                )
+            } else {
+                trackPosition.coerceAtMost(dotsCount.toFloat())
+            }
         }
     }
 
@@ -84,7 +90,7 @@ class AntiDotsView @JvmOverloads constructor(
             }
         }
 
-        if (dotsCount > 1) {
+        if (dotsCount >= 1) {
             trackBitmap?.apply {
                 canvas.drawBitmap(
                     this,
