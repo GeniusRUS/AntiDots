@@ -1,0 +1,3 @@
+include ':antidots'
+include ':example'
+rootProject.name = "AntiDOTS_example"
