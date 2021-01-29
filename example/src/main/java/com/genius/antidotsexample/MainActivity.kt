@@ -6,10 +6,9 @@ import android.util.Log
 import android.widget.SeekBar
 import com.genius.antidots.AntiDotsView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
         val antiDotsView = findViewById<AntiDotsView>(R.id.antidots)
         findViewById<SeekBar>(R.id.seekbar).setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
