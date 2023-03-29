@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(30)
+    namespace = "com.genius.antidotsexample"
+    compileSdk = 33
     defaultConfig {
         applicationId = "com.genius.antidotsexample"
-        minSdkVersion(16)
-        targetSdkVersion(30)
+        minSdk = 16
         versionCode = 1
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -27,26 +27,26 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-    lintOptions {
-        isAbortOnError = false
-    }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+    lint {
+        abortOnError = false
     }
 }
 
 dependencies {
     implementation(project(":antidots"))
     implementation(kotlin("stdlib-jdk7", KotlinCompilerVersion.VERSION))
-    implementation("androidx.appcompat:appcompat:1.3.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
-    implementation("androidx.core:core-ktx:1.5.0")
-    implementation("com.google.android.material:material:1.3.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("com.google.android.material:material:1.8.0")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test:runner:1.3.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }

@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.DrawableRes
+import androidx.annotation.FloatRange
+import androidx.core.content.res.use
 import androidx.core.graphics.drawable.toBitmap
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import kotlin.math.min
@@ -34,25 +36,25 @@ class AntiDotsView @JvmOverloads constructor(
     private var paddingRect: RectF = RectF(0F, 0F, 0F, 0F)
 
     init {
-        val typedArray = context.obtainStyledAttributes(attributeSet, R.styleable.AntiDotsView)
-        trackPosition = typedArray.getFloat(R.styleable.AntiDotsView_trackPosition, 0F).coerceAtLeast(
-            0F
-        )
-        dotsCount = typedArray.getInt(R.styleable.AntiDotsView_dotsCount, 0).coerceAtLeast(0)
-        dotsDrawable = updateDrawableInternal(
-            typedArray.getResourceId(
-                R.styleable.AntiDotsView_dotDrawable,
-                0
+        context.obtainStyledAttributes(attributeSet, R.styleable.AntiDotsView).use {
+            trackPosition = it.getFloat(R.styleable.AntiDotsView_trackPosition, 0F).coerceAtLeast(
+                0F
             )
-        )
-        trackDrawable = updateDrawableInternal(
-            typedArray.getResourceId(
-                R.styleable.AntiDotsView_trackDrawable,
-                0
+            dotsCount = it.getInt(R.styleable.AntiDotsView_dotsCount, 0).coerceAtLeast(0)
+            dotsDrawable = updateDrawableInternal(
+                it.getResourceId(
+                    R.styleable.AntiDotsView_dotDrawable,
+                    0
+                )
             )
-        )
-        dotsSpace = typedArray.getDimension(R.styleable.AntiDotsView_dotsSpace, 1F.toPx)
-        typedArray.recycle()
+            trackDrawable = updateDrawableInternal(
+                it.getResourceId(
+                    R.styleable.AntiDotsView_trackDrawable,
+                    0
+                )
+            )
+            dotsSpace = it.getDimension(R.styleable.AntiDotsView_dotsSpace, 1F.toPx)
+        }
 
         dotBitmap = dotsDrawable?.toBitmap()
         trackBitmap = trackDrawable?.toBitmap()
@@ -147,11 +149,11 @@ class AntiDotsView @JvmOverloads constructor(
         }
     }
 
-    fun updateDotsCount(count: Int) {
+    fun updateDotsCount(@androidx.annotation.IntRange(from = 0) count: Int) {
         updateDotsCountInternal(count)
     }
 
-    fun updateTrackPosition(position: Float) {
+    fun updateTrackPosition(@FloatRange(from = 0.0) position: Float) {
         updateTrackPositionInternal(position)
     }
 
